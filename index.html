@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Ember Starter Kit</title>
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.css">
+</head>
+<body>
+
+  <script type="text/x-handlebars">
+    <div class="container">
+			<div class="page-header">
+				{{#link-to "index"}}
+					<h1>Music Lib</h1>
+				{{/link-to}}
+			</div>
+			<div class="row">
+				{{outlet}}
+			</div>
+		</div>
+	</script>
+	
+	<script type="text/x-handlebars" id="artists">
+				<div class="col-md-4">
+					<div class="list-group">
+						<div class="list-group-item">
+							{{input type="text" class="new-artist" placeholder="New Artist" value=newArtist insert-newline="createArtist"}}
+							<button {{action "createArtist"}} class="btn btn-primary btn-sm new-artist-button"
+								{{bind-attr disabled=disabled}}
+								>Add</button>
+						</div>
+						{{#each model}}
+							{{#link-to "artists.songs" this class="list-group-item"}}
+								{{name}}
+							{{/link-to}}
+						{{/each}}
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="list-group">
+						{{outlet}}
+					</div>
+				</div>	
+  </script>
+	
+	<script type="text/x-handlebars" id="artists/index">
+		<div class="list-group-item empty-list">
+			<div class="empty-message">
+				Select artist
+			</div>
+		</div>
+	</script>
+	
+	<script type="text/x-handlebars" id="artists/songs">
+		{{#if canCreateSong}}
+			<div class="list-group-item">
+				{{input type="text" class="new-song" placeholder=newSongPlaceholder value=newSong insert-newline="createSong"}}
+				<button {{action "createSong"}} class="btn btn-primary btn-sm new-song-button">Add</button>
+			</div>
+		{{/if}}
+		
+		{{#each songs}}
+			<div class="list-group-item">
+				{{title}}
+				{{view App.StarRating maxRating=5}}
+			</div>
+		{{else}}
+			{{#unless canCreateSong}}
+				<div class="list-group-item empty-list">
+					<div class="empty-message">
+						No songs for {{name}}. Why don't you <a href="#" {{action enableSongCreation}}>create</a> one
+					</div>
+				</div>
+			{{/unless}}
+		{{/each}}
+	</script>
+	
+	<script type="text/x-handlebars" id="star-rating">
+		{{#each view.stars}}
+			<span {{bind-attr class="full:glyphicon-star:glyphicon-star-empty :rating-star :glyphicon"}}
+						{{bind-attr data-rating=rating}}
+						{{action "setRating" target=view}}>
+			</span>
+		{{/each}}
+	</script>
+	
+	
+  <script src="js/libs/jquery-1.10.2.js"></script>
+  <script src="js/libs/handlebars-1.1.2.js"></script>
+  <script src="js/libs/ember-1.6.1.js"></script>
+	<script src="js/libs/bootstrap.js"></script>
+  <script src="js/app.js"></script>
+  <!-- to activate the test runner, add the "?test" query string parameter -->
+  <script src="tests/runner.js"></script>
+</body>
+</html>
